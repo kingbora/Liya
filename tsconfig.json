@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "downlevelIteration": true,
+    "jsx": "react",
+    "plugins": [{
+      "name": "typescript-plugin-css-modules"
+    }]
+  },
+  "include": ["src", "server", "global.d.ts"]
+}
