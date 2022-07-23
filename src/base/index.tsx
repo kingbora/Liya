@@ -15,7 +15,9 @@ export type CtrlStore<S = {}, A = {}> = EnhancedStore<S> & {
 };
 
 export const withController = function<T extends Slice> (Controller: PageControllerProps, Model: T, createService?: CreatePageServiceProps) {
-  return function (View: React.ComponentType) {
+  return function (View: React.ComponentType): React.ComponentClass {
+    const MemoView = React.memo(View);
+    // Redux store connect with React View
     class WrapView extends Controller {
       public axios: Axios;
       public cancelInstance: CancelTokenSource;
@@ -28,7 +30,7 @@ export const withController = function<T extends Slice> (Controller: PageControl
         });
 
         configStore.subscribe(() => {
-          this.forceUpdate();
+          this.$update();
         });
 
         const actions: {
@@ -53,6 +55,13 @@ export const withController = function<T extends Slice> (Controller: PageControl
         });
 
         createService?.(this.axios);
+
+        this.state = Model.getInitialState();
+      }
+
+      $update() {
+        const newState = this.store.getState();
+        this.setState(newState);
       }
 
       componentWillUnmount() {
@@ -63,7 +72,7 @@ export const withController = function<T extends Slice> (Controller: PageControl
         return (
           <StoreContext.Provider value={this.store}>
             <CtrlContext.Provider value={this}>
-              <View />
+              <MemoView {...this.state} />
             </CtrlContext.Provider>
           </StoreContext.Provider>
         );

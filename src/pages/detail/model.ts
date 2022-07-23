@@ -24,6 +24,9 @@ const detailSlice = createSlice({
     },
     todoAdded(state, action: PayloadAction<number>) {
       state.count = action.payload;
+    },
+    setState(state, action: PayloadAction<DetailState>) {
+      Object.assign(state, action.payload);
     }
   }
 });

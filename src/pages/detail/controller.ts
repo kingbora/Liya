@@ -8,6 +8,13 @@ export class DetailController extends PageController<DetailState, DetailActions>
     const { todoAdded } = this.store.actions;
     todoAdded(count + 1);
   };
+
+  handleDoSamething = () => {
+    const { setState } = this.store.actions;
+    setState({
+      count: 100
+    });
+  }
 }
 
 export default withController(DetailController, Model, createService);

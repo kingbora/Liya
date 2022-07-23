@@ -2,7 +2,7 @@ import React from "react";
 import { CtrlActions, StoreContext } from "../../base";
 
 /**
- * @deprecated 不推荐直接使用，应在controller中使用this.store.actions来做操作
+ * @deprecated not recommended! through `controller` to use handler to update state
  * @returns 
  */
 export default function useActions<A>() {
