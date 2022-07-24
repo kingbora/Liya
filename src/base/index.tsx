@@ -1,20 +1,26 @@
-import React from "react";
-import { configureStore, EnhancedStore, Slice } from "@reduxjs/toolkit";
-import axios, { Axios, CancelTokenSource } from "axios";
+import React from 'react';
+import { configureStore, EnhancedStore, Slice } from '@reduxjs/toolkit';
+import axios, { Axios, CancelTokenSource } from 'axios';
 
 export const CtrlContext = React.createContext({});
 export const StoreContext = React.createContext<CtrlStore>({} as any);
 
-export type CtrlActions<A extends {}> = {
-  // TODO
-  [k in keyof A]: A[k] extends (payload: infer P) => any ? (payload?: P) => void : () => void;
+export type CtrlActions<A extends Record<string, any>> = {
+  // TODO deal no paramters
+  [k in keyof A]: A[k] extends (payload: infer P) => any
+    ? (payload?: P) => void
+    : () => void;
 };
 
 export type CtrlStore<S = {}, A = {}> = EnhancedStore<S> & {
   actions: CtrlActions<A>;
 };
 
-export const withController = function<T extends Slice> (Controller: PageControllerProps, Model: T, createService?: CreatePageServiceProps) {
+export const withController = function <T extends Slice>(
+  Controller: PageControllerProps,
+  Model: T,
+  createService?: CreatePageServiceProps
+) {
   return function (View: React.ComponentType): React.ComponentClass {
     const MemoView = React.memo(View);
     // Redux store connect with React View
@@ -34,20 +40,27 @@ export const withController = function<T extends Slice> (Controller: PageControl
         });
 
         const actions: {
-          [k in keyof typeof Model.actions]: (payload?: Parameters<typeof Model.actions[k]>[0]) => void;
+          [k in keyof typeof Model.actions]: (
+            payload?: Parameters<typeof Model.actions[k]>[0]
+          ) => void;
         } = {};
 
         Object.keys(Model.actions).map((action) => {
-          if (typeof Model.actions[action] === "function") {
-            actions[action] = (payload?: Parameters<typeof Model.actions[typeof action]>[0]) => {
+          if (typeof Model.actions[action] === 'function') {
+            actions[action] = (
+              payload?: Parameters<typeof Model.actions[typeof action]>[0]
+            ) => {
               configStore.dispatch(Model.actions[action](payload));
             };
           }
-        })
+        });
 
-        this.store = {...configStore, ...{
-          actions
-        }} as CtrlStore;
+        this.store = {
+          ...configStore,
+          ...{
+            actions,
+          },
+        } as CtrlStore;
 
         this.cancelInstance = axios.CancelToken.source();
         this.axios = new Axios({
@@ -80,11 +93,11 @@ export const withController = function<T extends Slice> (Controller: PageControl
     }
 
     return WrapView;
-  }
+  };
 };
 
 interface PageControllerProps<T = {}> {
-  new(props: T): React.Component & PageController;
+  new (props: T): React.Component & PageController;
 }
 
 type CreatePageServiceProps = (axios: Axios) => {

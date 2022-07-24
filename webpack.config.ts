@@ -6,8 +6,7 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import TerserJSPlugin from "terser-webpack-plugin";
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-// import purgecss from "@fullhuman/postcss-purgecss";
-import PurgeCSSPlugin from "purgecss-webpack-plugin";
+import purgecss from "@fullhuman/postcss-purgecss";
 import glob from "glob";
 
 function resolve(...dir: string[]) {
@@ -38,9 +37,11 @@ function getStyleLoaders(isDev: boolean, module?: boolean) {
         plugins: [
           "postcss-preset-env",
           // 对css进行tree shaking
-          // purgecss({
-          //   content: glob.sync("src/**/*.{ts,tsx}", { nodir: true })
-          // })
+          // TODO not support :export
+          purgecss({
+            content: glob.sync("src/**/*.{ts,tsx}", { nodir: true }),
+            variables: true
+          })
         ]
       }
     }
@@ -68,9 +69,6 @@ function getWebpackPlugins(isDev: boolean) {
         `;
       },
       inject: "body"
-    }),
-    new PurgeCSSPlugin({
-      paths: glob.sync("src/**/*.{ts,tsx}", { nodir: true }),
     })
   ];
 

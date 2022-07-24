@@ -1,14 +1,14 @@
-@value: 12px;
+@value: red;
 
 .red {
-  color: red;
+  color: @value;
 }
 
 .unused {
-  font-size: @value;
+  font-size: 12px;
 }
 
 :export {
-  md: @value;
+  test: @value;
 }
 
