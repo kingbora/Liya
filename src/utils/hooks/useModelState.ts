@@ -1,11 +1,10 @@
-import React from "react";
-import { StoreContext } from "../../base";
+import useCtrl from './useCtrl';
 
 /**
  * @deprecated not recommended! replace to `useSelector`
- * @returns 
+ * @returns
  */
 export default function useModelState<S>() {
-  const store = React.useContext(StoreContext);
-  return store.getState() as S;
+  const ctrl = useCtrl();
+  return ctrl.store.getState() as S;
 }

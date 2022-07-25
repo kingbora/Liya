@@ -1,11 +1,11 @@
-import React from "react";
-import { CtrlContext } from "../../base";
+import React from 'react';
+import { BasePageContoller, CtrlContext } from '../../base';
 
 /**
  * @desc return controller instance.
- * @returns 
+ * @returns
  */
-export default function useCtrl<T>() {
+export default function useCtrl<T = BasePageContoller>() {
   const ctrl = React.useContext<T>(CtrlContext as any);
   return ctrl;
 }

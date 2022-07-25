@@ -1,6 +1,5 @@
-import React from "react";
-import { StoreContext } from "../../base";
+import useCtrl from './useCtrl';
 
 export default function useSelector() {
-  const store = React.useContext(StoreContext);
+  const ctrl = useCtrl();
 }

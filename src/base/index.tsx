@@ -3,7 +3,6 @@ import { configureStore, EnhancedStore, Slice } from '@reduxjs/toolkit';
 import axios, { Axios, CancelTokenSource } from 'axios';
 
 export const CtrlContext = React.createContext({});
-export const StoreContext = React.createContext<CtrlStore>({} as any);
 
 export type CtrlActions<A extends Record<string, any>> = {
   // TODO deal no paramters
@@ -83,11 +82,9 @@ export const withController = function <T extends Slice>(
 
       render() {
         return (
-          <StoreContext.Provider value={this.store}>
-            <CtrlContext.Provider value={this}>
-              <MemoView {...this.state} />
-            </CtrlContext.Provider>
-          </StoreContext.Provider>
+          <CtrlContext.Provider value={this}>
+            <MemoView {...this.state} />
+          </CtrlContext.Provider>
         );
       }
     }
@@ -103,6 +100,11 @@ interface PageControllerProps<T = {}> {
 type CreatePageServiceProps = (axios: Axios) => {
   [key: string]: (...rest: any) => void | Promise<any>;
 };
+
+export interface BasePageContoller<S = {}, A = {}> {
+  store: CtrlStore<S, A>;
+  axios: Axios;
+}
 
 export class PageController<S = {}, A = {}> extends React.Component {
   store!: CtrlStore<S, A>;
