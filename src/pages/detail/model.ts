@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export const detailName = "detail";
-
 export interface DetailState {
   count: number;
 }
@@ -11,7 +9,7 @@ const initialState: DetailState = {
 };
 
 const detailSlice = createSlice({
-  name: detailName,
+  name: "detail",
   initialState: initialState,
   reducers: {
     increment: state => {

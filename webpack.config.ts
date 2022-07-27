@@ -23,6 +23,7 @@ function getStyleLoaders(isDev: boolean, module?: boolean) {
       esModule: true,
       importLoaders: 2,
       modules: {
+        namedExport: true,
         localIdentName: isDev ? "[path][name]__[local]--[hash:base64:5]" : "[hash:base64:8]",
         localIdentContext: resolve("src")
       }

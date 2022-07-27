@@ -1,10 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+export interface HomeState {
+  value: number;
+}
+
+const initialState: HomeState = {
+  value: 0,
+};
+
 const homeSlice = createSlice({
   name: "home",
-  initialState: {
-    value: 0,
-  },
+  initialState,
   reducers: {
     add: state => {
       state.value += 1;
@@ -16,5 +22,7 @@ const homeSlice = createSlice({
     }
   }
 });
+
+export type HomeActions = typeof homeSlice.actions;
 
 export default homeSlice;

@@ -1,11 +1,11 @@
-import React from "react";
-import { CtrlActions, StoreContext } from "../../base";
+import { CtrlActions } from "../../base";
+import useCtrl from "./useCtrl";
 
 /**
  * @deprecated not recommended! through `controller` to use handler to update state
  * @returns 
  */
 export default function useActions<A>() {
-  const store = React.useContext(StoreContext);
-  return store.actions as CtrlActions<A>;
+  const ctrl = useCtrl();
+  return ctrl.store.actions as CtrlActions<A>;
 }

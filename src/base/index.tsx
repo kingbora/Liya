@@ -1,6 +1,15 @@
 import React from 'react';
 import { configureStore, EnhancedStore, Slice } from '@reduxjs/toolkit';
 import axios, { Axios, CancelTokenSource } from 'axios';
+import { Location, Params, useLocation, useNavigate, useParams } from 'react-router';
+import { PageSiteMap, PageSiteOption } from "../types";
+
+interface NavigationRouterProps {
+  params: Readonly<Params<string>>;
+  location: Location;
+  push: (page: PageSiteMap, option?: PageSiteOption) => void;
+  pop: () => void;
+}
 
 export const CtrlContext = React.createContext({});
 
@@ -16,19 +25,28 @@ export type CtrlStore<S = {}, A = {}> = EnhancedStore<S> & {
 };
 
 export const withController = function <T extends Slice>(
-  Controller: PageControllerProps,
+  Controller: PageControllerProps<NavigationRouterProps>,
   Model: T,
   createService?: CreatePageServiceProps
 ) {
-  return function (View: React.ComponentType): React.ComponentClass {
+  return function (View: React.ComponentType): React.FunctionComponent {
     const MemoView = React.memo(View);
     // Redux store connect with React View
     class WrapView extends Controller {
       public axios: Axios;
       public cancelInstance: CancelTokenSource;
       public store: CtrlStore;
-      constructor(props: any) {
+      public urlQuery;
+      public location;
+      public push;
+      public pop;
+      constructor(props: NavigationRouterProps) {
         super(props);
+
+        this.urlQuery = props.params;
+        this.location = props.location;
+        this.push = props.push;
+        this.pop = props.pop;
 
         const configStore = configureStore({
           reducer: Model.reducer,
@@ -89,12 +107,30 @@ export const withController = function <T extends Slice>(
       }
     }
 
-    return WrapView;
+    return function () {
+      const params = useParams();
+      const location = useLocation();
+      const navigator = useNavigate();
+
+      function push(page: PageSiteMap | string, option?: PageSiteOption) {
+        if (typeof page === "string") {
+          navigator(page, option);
+        } else {
+          navigator(page.path, option);
+        }
+      }
+
+      function pop() {
+        navigator(-1);
+      }
+
+      return <WrapView params={params} location={location} push={push} pop={pop} />
+    };
   };
 };
 
 interface PageControllerProps<T = {}> {
-  new (props: T): React.Component & PageController;
+  new (props: T): React.Component<NavigationRouterProps> & PageController;
 }
 
 type CreatePageServiceProps = (axios: Axios) => {
@@ -106,7 +142,15 @@ export interface BasePageContoller<S = {}, A = {}> {
   axios: Axios;
 }
 
-export class PageController<S = {}, A = {}> extends React.Component {
+export class PageController<S = {}, A = {}> extends React.Component<NavigationRouterProps> {
   store!: CtrlStore<S, A>;
   axios!: Axios;
+  params!: Readonly<Params<string>>;
+  location!: Location;
+  push!: (page: PageSiteMap, option?: PageSiteOption) => void;
+  pop!: () => void;
+  pageDidMount?(): void;
+  pageDidShow?(): void;
+  pageDidHide?(): void;
+  pageWillUnmount?(): void;
 }

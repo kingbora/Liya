@@ -24,6 +24,7 @@ function DetailView() {
       <button onClick={ctrl.handleDoSomething}>do something</button>
       <button onClick={() => actions.decrement()}>todo</button>
       <button onClick={ctrl.handleDoSamething}>do samething</button>
+      <button onClick={ctrl.pop}>back</button>
       <div className={style.red}>{count}</div>
       <OrderList />
       <UserInfo />

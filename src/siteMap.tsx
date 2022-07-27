@@ -1,6 +1,7 @@
 import React from "react";
-import Detail from "./pages/detail";
-import Home from "./pages/home";
+
+const Home = React.lazy(() => import("./pages/home"));
+const Detail = React.lazy(() => import("./pages/detail"));
 
 const siteMap = {
   home: {
@@ -11,11 +12,6 @@ const siteMap = {
     path: "/detail",
     component: <Detail />
   }
-};
-
-export type SiteMap = {
-  path: string;
-  component: React.ReactElement;
 };
 
 export default siteMap;
