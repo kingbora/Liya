@@ -14,10 +14,7 @@ interface NavigationRouterProps {
 export const CtrlContext = React.createContext({});
 
 export type CtrlActions<A extends Record<string, any>> = {
-  // TODO deal no paramters
-  [k in keyof A]: A[k] extends (payload: infer P) => any
-    ? (payload?: P) => void
-    : () => void;
+  [k in keyof A]: A[k] extends (...args: infer Args) => void ? (Args extends [infer P] ? (payload: P) => void : () => void) : never;
 };
 
 export type CtrlStore<S = {}, A = {}> = EnhancedStore<S> & {

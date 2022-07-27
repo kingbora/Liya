@@ -11,7 +11,8 @@
       "options": {
         "customMatcher": "\\.less$"
       }
-    }]
+    }],
+    "isolatedModules": true
   },
   "include": ["src", "server", "global.d.ts"],
   "exclude": ["node_modules"]
