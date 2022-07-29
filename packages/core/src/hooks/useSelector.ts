@@ -44,7 +44,7 @@ function shallowEqual<
 /**
  * @returns
  */
- function useModelState<S, R = any>(func: (state: S) => R) {
+ function useSelector<S, R = any>(func: (state: S) => R) {
   const ctrl = useCtrl<any>();
   const [value, setValue] = React.useState<R>(func(ctrl.store.getState()));
 
@@ -65,4 +65,4 @@ function shallowEqual<
   return value;
 }
 
-export default useModelState;
+export default useSelector;

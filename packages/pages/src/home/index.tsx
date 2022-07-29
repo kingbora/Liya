@@ -1,13 +1,11 @@
 import React from "react";
-import useActions from "../../utils/hooks/useAction";
-import useCtrl from "../../utils/hooks/useCtrl";
-import useModelState from "../../utils/hooks/useModelState";
+import { useCtrl, useSelector, useActions } from "@liya/core";
 import withView, { HomeController } from "./controller";
 import { HomeActions, HomeState } from "./model";
 
 function HomeView() {
   const ctrl = useCtrl<HomeController>();
-  const { value } = useModelState<HomeState, {
+  const { value } = useSelector<HomeState, {
     value: number;
   }>((state) => ({
     value: state.value

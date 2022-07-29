@@ -1,6 +1,6 @@
 import createService from "./services";
 import Model, { DetailActions, DetailState } from "./model";
-import { PageController, withController } from "../../base";
+import { PageController, withController } from "@liya/core";
 
 export class DetailController extends PageController<DetailState, DetailActions> {
   handleDoSomething = () => {

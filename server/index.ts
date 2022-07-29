@@ -5,7 +5,7 @@ import webpackDevMiddleware from "webpack-dev-middleware";
 import webpack from "webpack";
 import open from "open";
 import historyApiFallback from "connect-history-api-fallback";
-import config  from "../webpack.config";
+import config  from "../build/web/webpack.config";
 import getPort from "./getPort";
 import api from "./api";
 

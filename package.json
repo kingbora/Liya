@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "start:ssr": "cross-env NODE_ENV='development' nodemon ./server/index.ts",
-    "start": "cross-env NODE_ENV='development' webpack-dev-server",
-    "build": "cross-env NODE_ENV='production' webpack",
+    "start": "cross-env NODE_ENV='development' webpack-dev-server --config ./build/web/webpack.config.ts",
+    "build": "cross-env NODE_ENV='production' webpack --config ./build/web/webpack.config.ts",
     "test": "jest",
     "prepare": "is-ci || husky install"
   },
@@ -24,11 +24,12 @@
     "body-parser": "^1.20.0",
     "connect-history-api-fallback": "^2.0.0",
     "cookie-parser": "^1.4.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-redux": "^8.0.2",
+    "react": "18.0.0",
+    "react-dom": "18.0.0",
+    "react-native": "0.69.3",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
+    "react-router-native": "^6.3.0",
     "redux": "^4.2.0"
   },
   "devDependencies": {
@@ -50,6 +51,7 @@
     "@types/node": "^18.0.6",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "@types/react-native": "^0.69.3",
     "@types/webp-in-css": "^0.7.0",
     "@types/webpack-node-externals": "^2.5.3",
     "babel-loader": "^8.2.5",

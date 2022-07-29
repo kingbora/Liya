@@ -62,6 +62,9 @@ function getWebpackPlugins(isDev: boolean) {
     new webpack.DefinePlugin({
       __DEV__: isDev
     }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /react-native/,
+    }),
     new HtmlWebpackPlugin({
       templateContent: () => {
         return `

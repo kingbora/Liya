@@ -9,7 +9,7 @@ declare module "*.less" {
 }
 
 declare global {
-  const __DEV__: boolean;
+  const __PLATFORM__: string;
 }
 
 export {}

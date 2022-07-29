@@ -1,5 +1,5 @@
 import React from 'react';
-import { PageController, CtrlContext } from '../../base';
+import { PageController, CtrlContext } from '../base';
 
 /**
  * @desc return controller instance.

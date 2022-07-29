@@ -13,6 +13,6 @@
       }
     }]
   },
-  "include": ["src", "server", "global.d.ts"],
+  "include": ["server", "packages", "global.d.ts"],
   "exclude": ["node_modules"]
 }

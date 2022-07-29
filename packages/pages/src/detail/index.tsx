@@ -1,16 +1,14 @@
 import React from 'react';
 import { DetailActions, DetailState } from './model';
 import withView, { DetailController } from './controller';
-import useCtrl from '../../utils/hooks/useCtrl';
-import useActions from '../../utils/hooks/useAction';
-import useModelState from '../../utils/hooks/useModelState';
+import { useCtrl, useActions, useSelector} from "@liya/core";
 import style from "./style.module.less";
 import OrderList from './widgets/OrderList';
 import UserInfo from './widgets/UserInfo';
 
 function DetailView() {
   const ctrl = useCtrl<DetailController>();
-  const { count, name } = useModelState<DetailState, {
+  const { count, name } = useSelector<DetailState, {
     count: number;
     name: string;
   }>((state) => ({

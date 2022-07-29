@@ -1,4 +1,3 @@
-import { PageController } from "../../base";
 import useCtrl from "./useCtrl";
 
 /**

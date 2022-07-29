@@ -1,0 +1,7 @@
+{
+  "name": "@liya/pages",
+  "version": "0.0.1",
+  "dependencies": {
+    "@liya/core": "workspace:^0.0.1"
+  }
+}

@@ -1,5 +1,5 @@
-import { PageController, withController } from "../../base";
-import siteMap from "../../siteMap";
+import { PageController, withController } from "@liya/core";
+import { siteMap } from "..";
 import Model, { HomeActions, HomeState } from "./model";
 
 export class HomeController extends PageController<HomeState, HomeActions> {

@@ -21,7 +21,7 @@ const localStoreMap = new Map();
 
 export const CtrlContext = React.createContext({});
 
-export interface PageLifecycle {
+interface PageLifecycle {
   pageDidMount?(): void;
   pageDidShow?(): void;
   pageDidHide?(): void;
@@ -51,11 +51,11 @@ interface ActionStore<S = {}, A = {}> {
   };
 }
 
-export interface PageViewProps {
+interface PageViewProps {
   SSR?: boolean;
 }
 
-export interface RouteNavigatorProps {
+interface RouteNavigatorProps {
   urlQuery: Readonly<Params<string>>;
   location: Location;
   push: (to: To, options?: NavigateOptions) => void;
@@ -128,6 +128,7 @@ export const withController = function <
         Object.keys(Model.actions).map((key: keyof A) => {
           const action: any = Model.actions[key];
           if (typeof action === 'function') {
+            // TODO: how to get inner function arguments to avoid no payload parameter function
             actions[key] = (...args: any[]) => {
               $store.dispatch(action(...args));
             };
