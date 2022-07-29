@@ -7,14 +7,18 @@ import { HomeActions, HomeState } from "./model";
 
 function HomeView() {
   const ctrl = useCtrl<HomeController>();
-  const { value } = useModelState<HomeState>();
+  const { value } = useModelState<HomeState, {
+    value: number;
+  }>((state) => ({
+    value: state.value
+  }));
   const { add, sub  } = useActions<HomeActions>();
   return (
     <div>
       <button onClick={ctrl.handleJumpPage}>jump</button>
-      <button onClick={() => add()}>+</button>
+      <button onClick={add}>+</button>
       <div>{value}</div>
-      <button onClick={() => sub()}>-</button>
+      <button onClick={sub}>-</button>
     </div>
   );
 }

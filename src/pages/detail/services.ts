@@ -6,7 +6,7 @@ function createService(axios: Axios) {
 
     },
     getContent() {
-      this.getContent();
+      this.getIpLocation();
     }
   };
 };

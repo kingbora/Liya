@@ -1,10 +1,10 @@
 import { PageController, withController } from "../../base";
 import siteMap from "../../siteMap";
-import Model from "./model";
+import Model, { HomeActions, HomeState } from "./model";
 
-export class HomeController extends PageController {
+export class HomeController extends PageController<HomeState, HomeActions> {
   handleJumpPage = () => {
-    this.push(siteMap.detail);
+    this.push(siteMap.detail.path);
   }
 }
 

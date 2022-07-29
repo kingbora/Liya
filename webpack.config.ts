@@ -23,7 +23,8 @@ function getStyleLoaders(isDev: boolean, module?: boolean) {
       esModule: true,
       importLoaders: 2,
       modules: {
-        namedExport: true,
+        // TODO: namedExport conflict with css module (:export)
+        // namedExport: true,
         localIdentName: isDev ? "[path][name]__[local]--[hash:base64:5]" : "[hash:base64:8]",
         localIdentContext: resolve("src")
       }
@@ -58,6 +59,9 @@ function getStyleLoaders(isDev: boolean, module?: boolean) {
 
 function getWebpackPlugins(isDev: boolean) {
   const plugins: webpack.WebpackPluginInstance[] = [
+    new webpack.DefinePlugin({
+      __DEV__: isDev
+    }),
     new HtmlWebpackPlugin({
       templateContent: () => {
         return `
@@ -92,7 +96,7 @@ export function getWebpackConfig(env = process.env.NODE_ENV as Configuration["mo
   return {
     mode: env,
     entry: {
-      index: resolve("src", "index.tsx")
+      index: resolve("src", "index.tsx"),
     },
     devServer: {
       historyApiFallback: true,

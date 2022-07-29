@@ -1,4 +1,4 @@
-import { CtrlActions } from "../../base";
+import { PageController } from "../../base";
 import useCtrl from "./useCtrl";
 
 /**
@@ -7,5 +7,11 @@ import useCtrl from "./useCtrl";
  */
 export default function useActions<A>() {
   const ctrl = useCtrl();
-  return ctrl.store.actions as CtrlActions<A>;
+  return ctrl.store.actions as {
+    [k in keyof A]: A[k] extends (...args: infer Args) => void
+      ? Args extends [infer P]
+        ? (payload: P) => void
+        : () => void
+      : never;
+  };
 }

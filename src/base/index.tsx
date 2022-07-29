@@ -1,153 +1,213 @@
 import React from 'react';
-import { configureStore, EnhancedStore, Slice } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  Slice,
+  SliceCaseReducers,
+  Store,
+  Unsubscribe,
+} from '@reduxjs/toolkit';
 import axios, { Axios, CancelTokenSource } from 'axios';
-import { Location, Params, useLocation, useNavigate, useParams } from 'react-router';
-import { PageSiteMap, PageSiteOption } from "../types";
+import {
+  Location,
+  NavigateOptions,
+  Params,
+  To,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router';
 
-interface NavigationRouterProps {
-  params: Readonly<Params<string>>;
-  location: Location;
-  push: (page: PageSiteMap, option?: PageSiteOption) => void;
-  pop: () => void;
-}
+const localStoreMap = new Map();
 
 export const CtrlContext = React.createContext({});
 
-export type CtrlActions<A extends Record<string, any>> = {
-  [k in keyof A]: A[k] extends (...args: infer Args) => void ? (Args extends [infer P] ? (payload: P) => void : () => void) : never;
-};
-
-export type CtrlStore<S = {}, A = {}> = EnhancedStore<S> & {
-  actions: CtrlActions<A>;
-};
-
-export const withController = function <T extends Slice>(
-  Controller: PageControllerProps<NavigationRouterProps>,
-  Model: T,
-  createService?: CreatePageServiceProps
-) {
-  return function (View: React.ComponentType): React.FunctionComponent {
-    const MemoView = React.memo(View);
-    // Redux store connect with React View
-    class WrapView extends Controller {
-      public axios: Axios;
-      public cancelInstance: CancelTokenSource;
-      public store: CtrlStore;
-      public urlQuery;
-      public location;
-      public push;
-      public pop;
-      constructor(props: NavigationRouterProps) {
-        super(props);
-
-        this.urlQuery = props.params;
-        this.location = props.location;
-        this.push = props.push;
-        this.pop = props.pop;
-
-        const configStore = configureStore({
-          reducer: Model.reducer,
-        });
-
-        configStore.subscribe(() => {
-          this.$update();
-        });
-
-        const actions: {
-          [k in keyof typeof Model.actions]: (
-            payload?: Parameters<typeof Model.actions[k]>[0]
-          ) => void;
-        } = {};
-
-        Object.keys(Model.actions).map((action) => {
-          if (typeof Model.actions[action] === 'function') {
-            actions[action] = (
-              payload?: Parameters<typeof Model.actions[typeof action]>[0]
-            ) => {
-              configStore.dispatch(Model.actions[action](payload));
-            };
-          }
-        });
-
-        this.store = {
-          ...configStore,
-          ...{
-            actions,
-          },
-        } as CtrlStore;
-
-        this.cancelInstance = axios.CancelToken.source();
-        this.axios = new Axios({
-          cancelToken: this.cancelInstance.token,
-        });
-
-        createService?.(this.axios);
-
-        this.state = Model.getInitialState();
-      }
-
-      $update() {
-        const newState = this.store.getState();
-        this.setState(newState);
-      }
-
-      componentWillUnmount() {
-        this.cancelInstance.cancel();
-      }
-
-      render() {
-        return (
-          <CtrlContext.Provider value={this}>
-            <MemoView {...this.state} />
-          </CtrlContext.Provider>
-        );
-      }
-    }
-
-    return function () {
-      const params = useParams();
-      const location = useLocation();
-      const navigator = useNavigate();
-
-      function push(page: PageSiteMap | string, option?: PageSiteOption) {
-        if (typeof page === "string") {
-          navigator(page, option);
-        } else {
-          navigator(page.path, option);
-        }
-      }
-
-      function pop() {
-        navigator(-1);
-      }
-
-      return <WrapView params={params} location={location} push={push} pop={pop} />
-    };
-  };
-};
-
-interface PageControllerProps<T = {}> {
-  new (props: T): React.Component<NavigationRouterProps> & PageController;
-}
-
-type CreatePageServiceProps = (axios: Axios) => {
-  [key: string]: (...rest: any) => void | Promise<any>;
-};
-
-export interface BasePageContoller<S = {}, A = {}> {
-  store: CtrlStore<S, A>;
-  axios: Axios;
-}
-
-export class PageController<S = {}, A = {}> extends React.Component<NavigationRouterProps> {
-  store!: CtrlStore<S, A>;
-  axios!: Axios;
-  params!: Readonly<Params<string>>;
-  location!: Location;
-  push!: (page: PageSiteMap, option?: PageSiteOption) => void;
-  pop!: () => void;
+export interface PageLifecycle {
   pageDidMount?(): void;
   pageDidShow?(): void;
   pageDidHide?(): void;
   pageWillUnmount?(): void;
 }
+
+interface BasePageProps extends RouteNavigatorProps, PageViewProps {
+  children?: React.ReactElement;
+}
+
+export interface PageController<S = {}, A = {}, P = {}>
+  extends RouteNavigatorProps {
+  new (props: P): React.Component<P>;
+  store: ActionStore<S, A>;
+  axios: Axios;
+}
+export class PageController<S, A, P = {}> extends React.Component<P> {}
+
+interface ActionStore<S = {}, A = {}> {
+  getState: () => S;
+  actions: {
+    [k in keyof A]: A[k] extends (...args: infer Args) => void
+      ? Args extends [infer P]
+        ? (payload: P) => void
+        : () => void
+      : never;
+  };
+}
+
+export interface PageViewProps {
+  SSR?: boolean;
+}
+
+export interface RouteNavigatorProps {
+  urlQuery: Readonly<Params<string>>;
+  location: Location;
+  push: (to: To, options?: NavigateOptions) => void;
+  pop: () => void;
+}
+
+type FuncType<S> = (state: S) => void;
+
+type CreateServiceType = (axios: Axios) => {
+  [key: string]: (...args: any[]) => any;
+};
+
+export const withController = function <
+  C extends typeof PageController<S, any>,
+  S,
+  A extends SliceCaseReducers<S>,
+  N extends string
+>(Controller: C, Model: Slice<S, A, N>, createService?: CreateServiceType) {
+  return function (
+    View: React.ComponentType
+  ): React.FunctionComponent<PageViewProps> {
+    const MemoView = React.memo(View);
+    const SuperClass: React.ComponentClass<BasePageProps> = Controller as any;
+
+    class BasePage extends SuperClass {
+      store: ActionStore<S, any>;
+      urlQuery: Readonly<Params<string>>;
+      location: Location;
+      cancelToken: CancelTokenSource;
+      push: (to: To, options?: NavigateOptions) => void;
+      pop: () => void;
+      axios: Axios;
+      private updateQueue: FuncType<S>[] = [];
+      private subscriber: Unsubscribe | null;
+      constructor(props: BasePageProps) {
+        super(props);
+
+        // initial service
+        this.cancelToken = axios.CancelToken.source();
+        this.axios = new Axios({
+          cancelToken: this.cancelToken.token,
+        });
+        createService?.(this.axios);
+
+        // initial navigator
+        this.push = props.push;
+        this.pop = props.pop;
+        this.urlQuery = props.urlQuery;
+        this.location = props.location;
+
+        // initial store
+        // TODO: only save state of the first three pages ?
+        let $store: Store<S>;
+        if (localStoreMap.has(Model.name)) {
+          $store = localStoreMap.get(Model.name);
+        } else {
+          $store = configureStore({
+            reducer: Model.reducer,
+            devTools: __DEV__,
+            middleware: (getDefaultMiddleware) => {
+              return getDefaultMiddleware({
+                serializableCheck: false,
+              });
+            },
+          });
+          localStoreMap.set(Model.name, $store);
+        }
+
+        const actions: any = {};
+        Object.keys(Model.actions).map((key: keyof A) => {
+          const action: any = Model.actions[key];
+          if (typeof action === 'function') {
+            actions[key] = (...args: any[]) => {
+              $store.dispatch(action(...args));
+            };
+          }
+        });
+
+        this.store = {
+          getState: () => {
+            const state = $store.getState();
+            return state;
+          },
+          actions,
+        };
+
+        this.subscriber = $store.subscribe(() => {
+          const state = $store.getState();
+          this.noticeUpdate(state);
+        });
+      }
+
+      noticeUpdate(state: S) {
+        if (this.updateQueue.length > 0) {
+          this.updateQueue.forEach(
+            (cb) => typeof cb === 'function' && cb(state)
+          );
+        }
+      }
+
+      addUpdateEvent(func: FuncType<S>) {
+        if (this.updateQueue.indexOf(func) === -1) {
+          this.updateQueue.push(func);
+        }
+      }
+
+      removeUpdateEvent(func: FuncType<S>) {
+        const index = this.updateQueue.indexOf(func);
+        if (index !== -1) {
+          this.updateQueue.splice(index, 1);
+        }
+      }
+
+      componentDidMount() {
+        (this as PageLifecycle).pageDidMount?.();
+      }
+
+      componentWillUnmount() {
+        (this as PageLifecycle).pageWillUnmount?.();
+        this.cancelToken.cancel("abort request due to page destroy");
+        this.subscriber?.();
+        this.subscriber = null;
+        this.updateQueue = [];
+      }
+
+      render() {
+        return (
+          <CtrlContext.Provider value={this}>
+            {this.props.children}
+          </CtrlContext.Provider>
+        );
+      }
+    }
+
+    return function (props: PageViewProps) {
+      const params = useParams();
+      const location = useLocation();
+      const navigator = useNavigate();
+
+      function pop() {
+        navigator(-1);
+      }
+
+      function push(to: To, options?: NavigateOptions) {
+        navigator(to, options);
+      }
+
+      return (
+        <BasePage urlQuery={params} location={location} pop={pop} push={push}>
+          <MemoView />
+        </BasePage>
+      );
+    };
+  };
+};
