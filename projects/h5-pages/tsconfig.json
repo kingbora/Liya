@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.root.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "ESNext",
+    "jsx": "react",
+    "plugins": [{
+      "name": "typescript-plugin-css-modules",
+      "options": {
+        "customMatcher": "\\.less$"
+      }
+    }]
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "module": "commonjs",
+      "moduleResolution": "node"
+    }
+  },
+  "include": ["src", "global.d.ts"],
+  "exclude": ["node_modules"]
+}

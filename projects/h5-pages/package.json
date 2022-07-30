@@ -1,0 +1,14 @@
+{
+  "name": "@liya/h5-pages",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "cross-env NODE_ENV='development' webpack-dev-server",
+    "build": "cross-env NODE_ENV='producation' webpack",
+    "clean": "rimraf ./dist && rimraf node_modules"
+  },
+  "dependencies": {
+    "@liya/core": "workspace:^0.0.1",
+    "@liya/entry-h5": "workspace:^0.0.1",
+    "@liya/controller": "workspace:^0.0.1"
+  }
+}

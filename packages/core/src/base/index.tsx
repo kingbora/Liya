@@ -51,7 +51,7 @@ interface ActionStore<S = {}, A = {}> {
   };
 }
 
-interface PageViewProps {
+export interface PageViewProps {
   SSR?: boolean;
 }
 

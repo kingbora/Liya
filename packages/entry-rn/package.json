@@ -1,11 +1,14 @@
 {
-  "name": "@liya/core",
+  "name": "@liya/entry-rn",
   "version": "0.0.1",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "typings": "types/index.d.ts",
   "scripts": {
     "watch": "tsc -w",
     "clean": "rimraf ./dist && rimraf node_modules",
     "build": "npm run clean && tsc"
+  },
+  "dependencies": {
+    "@liya/types": "workspace:^0.0.1"
   }
 }

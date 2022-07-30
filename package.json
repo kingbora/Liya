@@ -1,10 +1,13 @@
 {
   "name": "liya",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "start:ssr": "cross-env NODE_ENV='development' nodemon ./server/index.ts",
-    "start": "cross-env NODE_ENV='development' webpack-dev-server --config ./build/web/webpack.config.ts",
-    "build": "cross-env NODE_ENV='production' webpack --config ./build/web/webpack.config.ts",
+    "watch": "pnpm --parallel --filter=@liya/* --filter=!@liya/*-pages watch",
+    "clean": "pnpm --filter=@liya/* clean && rimraf node_modules",
+    "start:h5": "pnpm --filter=@liya/h5-pages start",
+    "build:h5": "pnpm --filter @liya/h5-pages build",
     "test": "jest",
     "prepare": "is-ci || husky install"
   },
@@ -30,7 +33,8 @@
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
     "react-router-native": "^6.3.0",
-    "redux": "^4.2.0"
+    "redux": "^4.2.0",
+    "immer": "^9.0.15"
   },
   "devDependencies": {
     "@babel/core": "^7.18.9",
@@ -75,6 +79,7 @@
     "postcss-loader": "^7.0.1",
     "postcss-preset-env": "^7.7.2",
     "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.3.3",
     "ts-jest": "^28.0.7",

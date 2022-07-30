@@ -1,0 +1,8 @@
+{
+  "name": "@liya/rn-pages",
+  "version": "0.0.1",
+  "dependencies": {
+    "@liya/core": "workspace:^0.0.1",
+    "@liya/controller": "workspace:^0.0.1"
+  }
+}
