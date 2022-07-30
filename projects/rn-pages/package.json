@@ -1,8 +1,15 @@
 {
   "name": "@liya/rn-pages",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios"
+  },
   "dependencies": {
     "@liya/core": "workspace:^0.0.1",
+    "@liya/entry-rn": "workspace:^0.0.1",
     "@liya/controller": "workspace:^0.0.1"
   }
 }

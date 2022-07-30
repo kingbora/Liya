@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.root.json",
+  "compilerOptions": {
+    "jsx": "react-native",
+    "module": "esnext",
+    "target": "ESNext"
+  }
+}
