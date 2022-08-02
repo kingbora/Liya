@@ -1,0 +1,5 @@
+{
+  "name": "liya-rn-app",
+  "slug": "liya-rn-app",
+  "entryPoint": "./src/index.tsx"
+}

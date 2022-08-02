@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "clean": "rimraf ./dist && rimraf node_modules",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios"
   },
   "dependencies": {
-    "@liya/core": "workspace:^0.0.1",
-    "@liya/entry-rn": "workspace:^0.0.1",
-    "@liya/controller": "workspace:^0.0.1"
+    "@liya/core": "^0.0.1",
+    "@liya/entry-rn": "^0.0.1",
+    "@liya/controller": "^0.0.1"
   }
 }

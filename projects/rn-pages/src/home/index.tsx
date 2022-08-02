@@ -1,7 +1,7 @@
 import React from "react";
 import { useCtrl, useSelector, useActions } from "@liya/core";
 import { withHomeView, HomeController, HomeActions, HomeState } from "@liya/controller";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, SafeAreaView } from "react-native";
 
 function HomeView() {
   const ctrl = useCtrl<HomeController>();
@@ -12,7 +12,7 @@ function HomeView() {
   }));
   const { add, sub  } = useActions<HomeActions>();
   return (
-    <View>
+    <SafeAreaView>
       <TouchableOpacity onPress={ctrl.handleJumpPage}>
         <Text>jump</Text>
       </TouchableOpacity>
@@ -23,7 +23,7 @@ function HomeView() {
       <TouchableOpacity onPress={sub}>
         <Text>-</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 

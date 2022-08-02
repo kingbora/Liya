@@ -8,8 +8,8 @@
     "clean": "rimraf ./dist && rimraf node_modules"
   },
   "dependencies": {
-    "@liya/core": "workspace:^0.0.1",
-    "@liya/entry-h5": "workspace:^0.0.1",
-    "@liya/controller": "workspace:^0.0.1"
+    "@liya/core": "^0.0.1",
+    "@liya/entry-h5": "^0.0.1",
+    "@liya/controller": "^0.0.1"
   }
 }

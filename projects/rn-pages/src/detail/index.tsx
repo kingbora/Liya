@@ -1,7 +1,7 @@
 import React from 'react';
 import { withDetailView, DetailController, DetailActions, DetailState } from '@liya/controller';
 import { useCtrl, useActions, useSelector} from "@liya/core";
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View, SafeAreaView } from 'react-native';
 
 function DetailView() {
   const ctrl = useCtrl<DetailController>();
@@ -17,7 +17,7 @@ function DetailView() {
   console.log("yeah!, i'am rendered!");
 
   return (
-    <View>
+    <SafeAreaView>
       <TouchableOpacity onPress={ctrl.handleDoSomething}>
         <Text>do something</Text>
       </TouchableOpacity>
@@ -34,7 +34,7 @@ function DetailView() {
         actions.changeName(text);
       }} />
       <Text>{count}</Text>
-    </View>
+    </SafeAreaView>
   );
 }
 

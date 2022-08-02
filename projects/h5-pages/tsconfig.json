@@ -19,6 +19,6 @@
       "moduleResolution": "node"
     }
   },
-  "include": ["src", "global.d.ts"],
+  "include": ["src", "server", "global.d.ts"],
   "exclude": ["node_modules"]
 }

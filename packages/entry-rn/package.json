@@ -9,6 +9,6 @@
     "build": "npm run clean && tsc"
   },
   "dependencies": {
-    "@liya/types": "workspace:^0.0.1"
+    "@liya/types": "^0.0.1"
   }
 }
